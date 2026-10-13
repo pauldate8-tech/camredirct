@@ -1,0 +1,6 @@
+id=camredirect
+name=Camera Redirect Test Harness
+version=v1.0.0
+versionCode=1
+author=pauldate8
+description=Redirects camera selection to an external camera for configured target apps.
