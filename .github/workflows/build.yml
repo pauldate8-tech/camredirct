@@ -1,0 +1,26 @@
+name: build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r26d
+          add-to-path: true
+      - name: Build Zygisk module
+        run: |
+          cd module/jni
+          ndk-build APP_ABI="arm64-v8a armeabi-v7a" APP_PLATFORM=android-34
+      - name: Package module zip
+        run: |
+          mkdir -p module/zygisk
+          cp module/jni/libs/arm64-v8a/camredirect.so module/zygisk/arm64-v8a.so
+          cp module/jni/libs/armeabi-v7a/camredirect.so module/zygisk/armeabi-v7a.so
+          cd module
+          zip -r ../camredirect.zip . -x jni/\*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: camredirect-module
+          path: camredirect.zip
